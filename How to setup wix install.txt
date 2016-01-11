@@ -1,0 +1,33 @@
+how to setup wix install
+
+1. re-add the three projects in reference. The reference to Revit.IFC.common is wrong
+2. edit the product.wxs file. Go down to the ComponentGroup where .dlls from projects are listed.
+	a.change the source to the file path where your project builds the dlls
+	b. comment out all the .sig components
+	c. there is another .dll that is not built by projects but come with the source code, that one is in $(dir of IFCExportUIOverride.dll)\fr\
+3. edit the buildInstaller.bat
+	a. change the WixRoot to where you install your wixtool, add quote to wixroot if you have space in file/folder name
+	b. add %WixRoot%\before the candle.exe and light.exe. Here is a sample bat file.
+-----sample bat file --
+echo Build IFC installer
+
+echo %1
+echo %2
+echo yifan says I know it is not easy. 
+
+set ThisBatFileRoot=%~dp0
+rem Set this path to your Wix bin directory.
+set WixRoot= "C:\Program Files (x86)\WiX Toolset v3.10\bin"
+
+rem It is necessary to add the Wix bin directory to the system path temporarily to use the -ext flag below.
+SET PATH=%PATH%;%WixRoot%
+
+%WixRoot%\candle.exe -dProjectDir=%2 -ext WixUtilExtension %2Product.wxs 
+%WixRoot%\light.exe -ext WixUtilExtension -out RevitIFC2016.msi product.wixobj -ext WixUIExtension
+
+copy RevitIFC2016.msi %1..\Releasex64
+del RevitIFC2016.msi
+
+echo %1..\Releasex64\RevitIFC2016.msi
+
+--end sample--
