@@ -7441,7 +7441,8 @@ namespace Revit.IFC.Export.Toolkit
 
          IFCAnyHandle material = CreateInstance(file, IFCEntityType.IfcMaterial);
          IFCAnyHandleUtil.SetAttribute(material, "Name", name);
-         return material;
+            
+            return material;
       }
 
       /// <summary>

@@ -107,6 +107,7 @@
     <Compile Include="Exporter\PipeInsulationExporter.cs" />
     <Compile Include="Exporter\PropertySet\Calculators\BeamLoadBearingCalculator.cs" />
     <Compile Include="Exporter\PropertySet\Calculators\DoorAreaCalculator.cs" />
+    <Compile Include="Exporter\PropertySet\Calculators\MaterialThermalPropertiesCalculator.cs" />
     <Compile Include="Exporter\PropertySet\Calculators\WindowAreaCalculator.cs" />
     <Compile Include="Exporter\PropertySet\Calculators\ColumnLoadBearingCalculator.cs" />
     <Compile Include="Exporter\PropertySet\Calculators\CoveringFinishCalculator.cs" />

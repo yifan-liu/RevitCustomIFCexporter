@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Revit.IFC.Import", "Source\Revit.IFC.Import\Revit.IFC.Import.csproj", "{7F987D09-9716-4F50-ADE0-278E4B537101}"
 EndProject
@@ -86,6 +86,7 @@ Global
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|x64.ActiveCfg = Debug|x86
+		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|x64.Build.0 = Debug|x86
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|x86.ActiveCfg = Debug|x86
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Debug|x86.Build.0 = Debug|x86
 		{7DFBD495-C588-4C7B-B8F6-5B793ADB06F2}.Release|Any CPU.ActiveCfg = Release|x86
