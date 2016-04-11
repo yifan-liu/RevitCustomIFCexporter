@@ -364,8 +364,10 @@ namespace Revit.IFC.Export.Utility
             materialNameHandle = IFCInstanceExporter.CreateMaterial(exporterIFC.GetFile(), materialName);
 
             ExporterCacheManager.MaterialHandleCache.Register(materialId, materialNameHandle);
-            //Extrac material thermal properties
-            CreateMaterialThermalProperties(exporterIFC.GetFile(), materialId, materialNameHandle);
+
+                //Extract material thermal properties for the IFC2x3 Design to OpenStudio view
+            if (ExporterCacheManager.ExportOptionsCache.SelectedConfigName == "IFC2x3 Design to OpenStudio")
+                CreateMaterialThermalProperties(exporterIFC.GetFile(), materialId, materialNameHandle);
 
             // associate Material with SurfaceStyle if necessary.
             IFCFile file = exporterIFC.GetFile();
@@ -429,6 +431,14 @@ namespace Revit.IFC.Export.Utility
          return materialNameHandle;
       }
 
+
+        /// <summary>
+        /// Fpr each material, extract thermal properties needed for energy analysis
+        /// </summary>
+        /// <param name="file">the ifc file</param>
+        /// <param name="materialID">The material id.</param>
+        /// <param name="materialHandle">The material handle.</param>
+        /// <returns>True if operation succeeded.</returns>
         public static bool CreateMaterialThermalProperties(IFCFile file, ElementId materialID, IFCAnyHandle materialHandle)
         {
             try
@@ -449,11 +459,31 @@ namespace Revit.IFC.Export.Utility
                 IFCAnyHandle densitySingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
                 IFCAnyHandle specificHeatSingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
                 IFCAnyHandle thermalConductivitySingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
+                IFCAnyHandle roughnessSingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
+
+                //get the needed IfcSiUnit Handle mapping to populate the unit field of each thermal property type
+                List<string> units = new List<string>();
+                units.Add("KELVIN");
+                units.Add("JOULE");
+                units.Add("WATT");
+                units.Add("CUBIC_METRE");
+               // units.Add("");
+
+                //****!!!still need to develop this method
+                Dictionary<string, IFCAnyHandle> ifcUnitMap = GetUnitHandles(file, units);
+
+                //add roughness. NOTE: roughness has no unit
+                int defaultRoughness = 3;
+                IFCAnyHandleUtil.SetAttribute(roughnessSingleValue, "Name", "Roughness");
+                IFCAnyHandleUtil.SetAttribute(roughnessSingleValue, "NominalValue", defaultRoughness);
+                
 
                 IFCAnyHandleUtil.SetAttribute(densitySingleValue, "Name", "Density");
- //               IFCAnyHandle ifcValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.ifcthe); 
                 IFCAnyHandleUtil.SetAttribute(densitySingleValue, "NominalValue", density);
- //               IFCAnyHandleUtil.SetAttribute(densitySingleValue, "Unit", "kg/m3");
+                //******!!!! this is a test, need to be replaced
+                IFCAnyHandleUtil.SetAttribute(densitySingleValue, "Unit", file.GetInstances("ifcsiunit", true)[0]);
+
+
                 IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "Name", "Specific Heat");
                 IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "NominalValue", specificHeat);
 //                IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "Unit", "J/Kg Kelvin");
@@ -480,6 +510,32 @@ namespace Revit.IFC.Export.Utility
                 return false;
             }
         }
+
+        /// <summary>
+        /// Gets specific unit handles from existing units. Create new handle if no existing
+        /// </summary>
+        /// <param name="file">The IFCFile file object.</param>
+        /// <param name="units">A list of unit names.</param>
+        /// <returns>The handle.</returns>
+        public static Dictionary<string, IFCAnyHandle> GetUnitHandles(IFCFile file, IList<string> units)
+        {
+            IList<IFCAnyHandle> unitHandleList = new List<IFCAnyHandle>();
+            unitHandleList = file.GetInstances("ifcsiunit", true);
+            IList<IFCAnyHandle> derivedUnitHandleList = new List<IFCAnyHandle>();
+            derivedUnitHandleList = file.GetInstances("IfcDerivedUnitElement", true);
+            Dictionary<string, IFCAnyHandle> unitMap = new Dictionary<string, IFCAnyHandle>();
+
+            foreach (IFCAnyHandle hdl in unitHandleList)
+            {
+                string name = hdl.GetAttribute("Name").AsString();
+
+            }
+
+            //need to check for case of no handle and creating new handle
+
+            return unitMap;
+        }
+
 
    }
 }

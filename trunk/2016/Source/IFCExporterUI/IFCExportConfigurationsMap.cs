@@ -77,6 +77,7 @@ namespace BIM.IFC.Export.UI
             Add(IFCExportConfiguration.CreateBuiltInConfiguration("IFC2x3 Extended FM Handover View", IFCVersion.IFC2x3, 1, true, false, false, true, true, true, true, false));
             Add(IFCExportConfiguration.CreateBuiltInConfiguration("IFC4 Reference View", IFCVersion.IFC4, 0, false, false, false, false, false, false, false, false));
             Add(IFCExportConfiguration.CreateBuiltInConfiguration("IFC4 Design Transfer View", IFCVersion.IFC4, 0, false, false, false, false, false, false, false, false));
+            Add(IFCExportConfiguration.CreateBuiltInConfiguration("IFC2x3 Design to OpenStudio", IFCVersion.IFC2x3, 2, false, false, false, false, true, false, false, false));
         }
 
         /// <summary>
