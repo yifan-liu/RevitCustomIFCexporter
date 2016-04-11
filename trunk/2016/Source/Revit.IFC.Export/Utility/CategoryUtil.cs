@@ -364,8 +364,10 @@ namespace Revit.IFC.Export.Utility
             materialNameHandle = IFCInstanceExporter.CreateMaterial(exporterIFC.GetFile(), materialName);
 
             ExporterCacheManager.MaterialHandleCache.Register(materialId, materialNameHandle);
-            //Extrac material thermal properties
-            CreateMaterialThermalProperties(exporterIFC.GetFile(), materialId, materialNameHandle);
+
+                //Extract material thermal properties for the IFC2x3 Design to OpenStudio view
+            if (ExporterCacheManager.ExportOptionsCache.SelectedConfigName == "IFC2x3 Design to OpenStudio")
+               MaterialThermalPropertiesUtil.CreateMaterialThermalProperties(exporterIFC.GetFile(), materialId, materialNameHandle);
 
             // associate Material with SurfaceStyle if necessary.
             IFCFile file = exporterIFC.GetFile();
@@ -428,58 +430,6 @@ namespace Revit.IFC.Export.Utility
          }
          return materialNameHandle;
       }
-
-        public static bool CreateMaterialThermalProperties(IFCFile file, ElementId materialID, IFCAnyHandle materialHandle)
-        {
-            try
-            {
-                //get the required thermal properties
-                Document doc = ExporterCacheManager.Document;
-                Material mat = doc.GetElement(materialID) as Material;
-                ElementId thermalAseetID = mat.ThermalAssetId;
-                PropertySetElement pse = doc.GetElement(thermalAseetID) as PropertySetElement;
-                ThermalAsset ta = pse.GetThermalAsset();
-
-                double density = ta.Density;
-                double specificHeat = ta.SpecificHeat;
-                double thermalConductivity = ta.ThermalConductivity;
-
-                //PSU: create corresponding ifchandles
-                //create  and set an ifcsinglevalue for each thermal property
-                IFCAnyHandle densitySingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
-                IFCAnyHandle specificHeatSingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
-                IFCAnyHandle thermalConductivitySingleValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcPropertySingleValue);
-
-                IFCAnyHandleUtil.SetAttribute(densitySingleValue, "Name", "Density");
- //               IFCAnyHandle ifcValue = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.ifcthe); 
-                IFCAnyHandleUtil.SetAttribute(densitySingleValue, "NominalValue", density);
- //               IFCAnyHandleUtil.SetAttribute(densitySingleValue, "Unit", "kg/m3");
-                IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "Name", "Specific Heat");
-                IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "NominalValue", specificHeat);
-//                IFCAnyHandleUtil.SetAttribute(specificHeatSingleValue, "Unit", "J/Kg Kelvin");
-                IFCAnyHandleUtil.SetAttribute(thermalConductivitySingleValue, "Name", "Thermal Conductivity");
-                IFCAnyHandleUtil.SetAttribute(thermalConductivitySingleValue, "NominalValue", thermalConductivity);
-//                IFCAnyHandleUtil.SetAttribute(thermalConductivitySingleValue, "Unit", "Watt/m Kelvin");
-
-                //create and set an extendedMaterialProperties to connect a material to its thermal properties
-                IFCAnyHandle ifcExtendedMaterialProperties = IFCAnyHandleUtil.CreateInstance(file, IFCEntityType.IfcExtendedMaterialProperties);
-                List<IFCAnyHandle> listOfProperties = new List<IFCAnyHandle>();
-                listOfProperties.Add(densitySingleValue);
-                listOfProperties.Add(specificHeatSingleValue);
-                listOfProperties.Add(thermalConductivitySingleValue);
-
-                IFCAnyHandleUtil.SetAttribute(ifcExtendedMaterialProperties, "Material", materialHandle);
-                IFCAnyHandleUtil.SetAttribute(ifcExtendedMaterialProperties, "ExtendedProperties", listOfProperties);
-                IFCAnyHandleUtil.SetAttribute(ifcExtendedMaterialProperties, "Name", "Thermal_Properties");
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-        }
 
    }
 }

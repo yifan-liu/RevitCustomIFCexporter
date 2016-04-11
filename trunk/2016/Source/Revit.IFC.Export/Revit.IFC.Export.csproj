@@ -238,6 +238,7 @@
     <Compile Include="Utility\LevelInfoCache.cs" />
     <Compile Include="Utility\LevelUtil.cs" />
     <Compile Include="Utility\LogicalPropertyInfoCache.cs" />
+    <Compile Include="Utility\MaterialThermalPropertiesUtil.cs" />
     <Compile Include="Utility\MEPCache.cs" />
     <Compile Include="Utility\NamingOptions.cs" />
     <Compile Include="Utility\NamingUtil.cs" />

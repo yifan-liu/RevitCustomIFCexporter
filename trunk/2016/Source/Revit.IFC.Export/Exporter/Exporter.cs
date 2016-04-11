@@ -78,13 +78,18 @@ namespace Revit.IFC.Export.Exporter
       /// <param name="eventArgs">The event args.</param>
       private void OnApplicationInitialized(object sender, EventArgs eventArgs)
       {
-         SingleServerService service = ExternalServiceRegistry.GetService(ExternalServices.BuiltInExternalServices.IFCExporterService) as SingleServerService;
-         if (service != null)
-         {
-            Exporter exporter = new Exporter();
-            service.AddServer(exporter);
-            service.SetActiveServer(exporter.GetServerId());
-         }
+            try {
+                SingleServerService service = ExternalServiceRegistry.GetService(ExternalServices.BuiltInExternalServices.IFCExporterService) as SingleServerService;
+                if (service != null)
+                {
+                    Exporter exporter = new Exporter();
+                    service.AddServer(exporter);
+                    service.SetActiveServer(exporter.GetServerId());
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
          // TODO log this failure accordingly
       }
    }

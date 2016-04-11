@@ -386,6 +386,9 @@ namespace Revit.IFC.Export.Exporter
             // Misc. property sets
             InitPropertySetManufacturerTypeInformation(commonPropertySets);
 
+            //PSU: Thermal Property Psets
+ //           InitPropertySetThermalProperties(commonPropertySets);
+
             if (ExporterCacheManager.ExportOptionsCache.ExportAs4)
                 InitPropertySetSpaceCoveringRequirements(commonPropertySets);
             else
@@ -448,6 +451,45 @@ namespace Revit.IFC.Export.Exporter
             }
 
             commonPropertySets.Add(propertySetManufacturer);
+        }
+
+        /// <summary>
+        /// Initializes thermal property sets, including density, specificHeat, thermalConductivity, and Roughness.
+        /// </summary>
+        /// <param name="thermalPropertySets">List to store property sets.</param>
+        private static void InitPropertySetThermalProperties(IList<PropertySetDescription> thermalPropertySets)
+        {
+            //property set Manufacturer Information
+            PropertySetDescription thermalProperties = new PropertySetDescription();
+            thermalProperties.Name = "Pset_thermalProperties";
+
+            // sub type of IfcElement
+            thermalProperties.EntityTypes.Add(IFCEntityType.IfcMaterial);
+
+            PropertySetEntry ifcPSE = PropertySetEntry.CreateReal("");
+            thermalProperties.AddEntry(ifcPSE);
+
+            ifcPSE = PropertySetEntry.CreateLabel("ModelReference");
+            thermalProperties.AddEntry(ifcPSE);
+
+            ifcPSE = PropertySetEntry.CreateLabel("ModelLabel");
+            thermalProperties.AddEntry(ifcPSE);
+
+            ifcPSE = PropertySetEntry.CreateLabel("Manufacturer");
+            ifcPSE.RevitBuiltInParameter = BuiltInParameter.ALL_MODEL_MANUFACTURER;
+            thermalProperties.AddEntry(ifcPSE);
+
+            ifcPSE = PropertySetEntry.CreateLabel("ProductionYear");
+            thermalProperties.AddEntry(ifcPSE);
+
+            /*
+            if (ExporterCacheManager.ExportOptionsCache.ExportAs4)
+            {
+                thermalProperties.AddEntry(PropertySetEntry.CreateIdentifier("GlobalTradeItemNumber"));
+                thermalProperties.AddEntry(PropertySetEntry.CreateEnumeratedValue("AssemblyPlace",
+                    PropertyType.Label, typeof(Toolkit.IFC4.PsetManufacturerTypeInformation_AssemblyPlace)));
+            }
+            */
         }
 
         /// <summary>
