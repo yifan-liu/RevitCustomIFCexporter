@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace Revit.IFC.Export.Utility
 {
+    /// <summary>
+    /// Provides static methods for extracting material thermal properties
+    /// </summary>
     class MaterialThermalPropertiesUtil
     {
 
@@ -78,29 +81,5 @@ namespace Revit.IFC.Export.Utility
             }
         }
 
-        /// <summary>
-        /// Gets specific unit handles from existing units. Create new handle if no existing
-        /// </summary>
-        /// <param name="file">The IFCFile file object.</param>
-        /// <param name="units">A list of unit names.</param>
-        /// <returns>The handle.</returns>
-        public static Dictionary<string, IFCAnyHandle> GetUnitHandles(IFCFile file, IList<string> units)
-        {
-            IList<IFCAnyHandle> unitHandleList = new List<IFCAnyHandle>();
-            unitHandleList = file.GetInstances("ifcsiunit", true);
-            IList<IFCAnyHandle> derivedUnitHandleList = new List<IFCAnyHandle>();
-            derivedUnitHandleList = file.GetInstances("IfcDerivedUnitElement", true);
-            Dictionary<string, IFCAnyHandle> unitMap = new Dictionary<string, IFCAnyHandle>();
-
-            foreach (IFCAnyHandle hdl in unitHandleList)
-            {
-                string name = hdl.GetAttribute("Name").AsString();
-
-            }
-
-            //need to check for case of no handle and creating new handle
-
-            return unitMap;
-        }
     }
 }

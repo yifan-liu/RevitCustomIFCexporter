@@ -365,7 +365,7 @@ namespace Revit.IFC.Export.Utility
 
             ExporterCacheManager.MaterialHandleCache.Register(materialId, materialNameHandle);
 
-                //Extract material thermal properties for the IFC2x3 Design to OpenStudio view
+            //Extract material thermal properties for the IFC2x3 Design to OpenStudio configuration
             if (ExporterCacheManager.ExportOptionsCache.SelectedConfigName == "IFC2x3 Design to OpenStudio")
                MaterialThermalPropertiesUtil.CreateMaterialThermalProperties(exporterIFC.GetFile(), materialId, materialNameHandle);
 
